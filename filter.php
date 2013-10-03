@@ -40,13 +40,10 @@ class filter_tv3alacarta extends moodle_text_filter {
 
         $newtext = '';
         $match = '~<a\s[^>]*href="https?://www\.tv3\.cat/(?:3alacarta/#/)?videos/([0-9]+)(?:\/[^"]*)?"[^>]*>(.*?)</a>~is';
-        if (preg_match($match, $text, $matches)) {
-            $video = $this->filter_tv3_alacarta($matches);
-            $newtext = preg_replace($match, $video, $text);
-        }
-        if (empty($newtext)) {
+        $newtext = preg_replace_callback($match, array($this, 'filter_tv3_alacarta'), $text);
+
+        if (empty($newtext) or $newtext === $text) {
             // error or not filtered
-            unset($newtext);
             return $text;
         }
 
